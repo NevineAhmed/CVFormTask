@@ -1,0 +1,167 @@
+﻿@model CVSubTask.Models.Candidate
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+@if (ViewBag.msg != null)
+{
+    <span style="color:lightseagreen">
+        @ViewBag.msg
+    </span>
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm("Edit", "Candidate", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Candidate</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FullName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+
+            @Html.Label("Gender", htmlAttributes: new { @class = "control-label col-md-2" })
+
+            <div class="col-1">
+
+                <select class="form-control" id="CandidateGender" name="Genders">
+                    <option>Male</option>
+                    <option>Female</option>
+                </select>
+            </div>
+
+
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Date of Birth", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                <input type="date" name="DateOBirth" />
+                @Html.ValidationMessage("DateError", new { @class = "text-danger" })
+            </div>
+
+
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Area, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Area, new { htmlAttributes = new { @class = "form-control", Type = "text" } })
+                @Html.ValidationMessageFor(model => model.Area, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control", Type = "text" } })
+                @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CV, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @* @Html.EditorFor(model => model.CV, new { htmlAttributes = new { @class = "form-control", Type = "file", name = "mohammed" } })*@
+                <input type="file" name="cv" accept=".pdf,.docx" onchange="checkSize()" />     @*for client validation*@
+                @Html.ValidationMessage("FileError", new { @class = "text-danger" })           @*for server validation*@
+                <span id="fileAlert" style="color:red"> </span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-6">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Image, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+
+                <input type="file" name="img" accept="image/*" onchange="ValidateImg()" />    @*for client validation*@
+                @Html.ValidationMessage("ImageError", new { @class = "text-danger" })        @*for server validation*@
+                <span id="imageAlert" style="color:red"> </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+<script>
+    const ValidateImg = () => {
+        let img = new Image()
+        img.src = window.URL.createObjectURL(event.target.files[0])
+        img.onload = () => {
+
+            if ((img.width === 256 && img.height === 256)) {
+                document.getElementById("imageAlert").innerHTML = "";
+                return true;
+            }
+            else {
+
+                document.getElementById("imageAlert").innerHTML = "Incorrect size must be 256x256 ";
+                return true;
+            }
+
+        }
+    }
+
+    function checkSize() {
+
+        //if (!(document.getElementsByName("cv")[0].value.substr(document.getElementsByName("cv")[0].value.lastIndexOf(".")) === ".pdf" || document.getElementsByName("cv")[0].value.substr(document.getElementsByName("cv")[0].value.lastIndexOf(".")) === ".docx")) {
+        //    document.getElementById("fileAlert").innerHTML = "unsupported type, must be PDF or WORD";
+        //}
+
+
+        if (event.target.files[0] != " ") {
+            document.getElementById("fileAlert").innerHTML = "";
+
+            if (event.target.files[0].size > 1000000) {
+                document.getElementById("fileAlert").innerHTML = "File too big (max 1 MB)";
+
+                return false;
+            }
+            document.getElementById("fileAlert").innerHTML = "";
+            return true;
+        }
+
+    }
+
+
+
+
+</script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
